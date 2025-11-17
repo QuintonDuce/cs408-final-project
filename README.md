@@ -15,4 +15,4 @@ There are also a few stretch goals I’d like to add if I have extra time or eve
 
 TODO: Replace the wireframe below with you own design.
 
-![wireframe](wireframe-example.png)
+![wireframe](DietSiteWireframe.png)
