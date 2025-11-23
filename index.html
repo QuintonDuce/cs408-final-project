@@ -1,17 +1,149 @@
 <!doctype html>
-<html>
+<html lang="en">
 
 <head>
   <meta charset="utf-8">
-  <title>Hello World!</title>
-  <meta name="description" content="">
+  <title>Diet Tracker - Your Personal Food Journal</title>
+  <meta name="description" content="Track your meals and identify food triggers for your symptoms">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-  <h1>HTML Rocks!</h1>
-  <img src="img/compile.jpeg">
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <h1 class="logo">🍽️ Quinton's Food Log</h1>
+        <nav class="nav">
+          <a href="#" class="nav-link active">Dashboard</a>
+          <a href="#" class="nav-link">History</a>
+          <a href="#" class="nav-link">Insights</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main">
+    <div class="container">
+      
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="hero-content">
+          <h2 class="hero-title">Track Your Food, Understand Your Body</h2>
+          <p class="hero-subtitle">Identify which foods are causing your symptoms with our simple tracking system</p>
+          <button class="btn btn-primary" id="logMealBtn">
+            <span class="btn-icon">+</span>
+            Log a New Meal
+          </button>
+        </div>
+      </section>
+
+      <!-- Stats Section -->
+      <section class="stats">
+        <h3 class="section-title">This Week's Overview</h3>
+        <div class="stats-grid">
+          <div class="stat-card stat-card-primary">
+            <div class="stat-icon">📊</div>
+            <div class="stat-value" id="mealsCount">12</div>
+            <div class="stat-label">Meals Logged</div>
+          </div>
+          <div class="stat-card stat-card-warning">
+            <div class="stat-icon">⚠️</div>
+            <div class="stat-value" id="issuesCount">3</div>
+            <div class="stat-label">Issues Reported</div>
+          </div>
+          <div class="stat-card stat-card-info">
+            <div class="stat-icon">🥛</div>
+            <div class="stat-value" id="dairyCount">9</div>
+            <div class="stat-label">Dairy Items</div>
+          </div>
+          <div class="stat-card stat-card-danger">
+            <div class="stat-icon">🥩</div>
+            <div class="stat-value" id="redMeatCount">12</div>
+            <div class="stat-label">Red Meat Items</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Recent Entries Section -->
+      <section class="recent-entries">
+        <div class="section-header">
+          <h3 class="section-title">Recent Entries</h3>
+          <button class="btn btn-secondary">View All</button>
+        </div>
+        <div class="entries-list" id="entriesList">
+          <!-- Sample Entry -->
+          <div class="entry-card">
+            <div class="entry-header">
+              <span class="entry-title">Chicken Caesar Salad</span>
+              <span class="entry-time">2 hours ago</span>
+            </div>
+            <div class="entry-details">
+              <span class="entry-category">Poultry</span>
+              <span class="entry-symptom">No symptoms</span>
+            </div>
+          </div>
+          <div class="entry-card entry-warning">
+            <div class="entry-header">
+              <span class="entry-title">Cheese Pizza</span>
+              <span class="entry-time">5 hours ago</span>
+            </div>
+            <div class="entry-details">
+              <span class="entry-category">Dairy, Grain</span>
+              <span class="entry-symptom has-symptom">Bloating - Severity 3</span>
+            </div>
+          </div>
+          <div class="entry-card">
+            <div class="entry-header">
+              <span class="entry-title">Scrambled Eggs</span>
+              <span class="entry-time">Today, 8:00 AM</span>
+            </div>
+            <div class="entry-details">
+              <span class="entry-category">Protein</span>
+              <span class="entry-symptom">No symptoms</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Info Section -->
+      <section class="info-section">
+        <div class="info-card">
+          <h3>📈 How It Works</h3>
+          <ol class="info-list">
+            <li>Log what you eat after each meal</li>
+            <li>Record any symptoms you experience</li>
+            <li>Review patterns over time</li>
+            <li>Identify your trigger foods</li>
+          </ol>
+        </div>
+        <div class="info-card">
+          <h3>💡 Tips for Success</h3>
+          <ul class="info-list">
+            <li>Be consistent with your logging</li>
+            <li>Include details in the notes section</li>
+            <li>Track symptoms even if they seem minor</li>
+            <li>Review your data weekly</li>
+          </ul>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 Diet Tracker. A personal health journal for identifying food triggers.</p>
+      <p class="disclaimer">This tool is not a medical diagnostic tool. Consult with a healthcare professional for medical advice.</p>
+    </div>
+  </footer>
+
   <script type="module" src="js/main.js"></script>
 </body>
 
