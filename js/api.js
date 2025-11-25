@@ -6,9 +6,6 @@
 // Direct API URL - requires CORS to be enabled in AWS API Gateway
 const API_BASE_URL = 'https://pz6u22o701.execute-api.us-east-2.amazonaws.com';
 
-// Uncomment below to use CORS proxy for testing (NOT for production!)
-// const API_BASE_URL = 'https://corsproxy.io/?https://pz6u22o701.execute-api.us-east-2.amazonaws.com';
-
 /**
  * API Service Object
  */
