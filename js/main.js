@@ -1,3 +1,5 @@
+import API from './api.js';
+
 window.onload = loaded;
 
 /**
@@ -11,12 +13,12 @@ function loaded() {
 /**
  * Initialize the application
  */
-function initializeApp() {
+async function initializeApp() {
     // Set up event listeners
     setupEventListeners();
     
-    // Load sample data (this will be replaced with actual data later)
-    loadDashboardData();
+    // Load real data from API
+    await loadDashboardData();
     
     // Add animation on scroll
     addScrollAnimations();
@@ -44,11 +46,8 @@ function setupEventListeners() {
  */
 function handleLogMealClick() {
     console.log('Log Meal button clicked');
-    // For now, show an alert. Later this will navigate to a form page
-    showNotification('This will open the meal logging form', 'info');
-    
-    // TODO: Navigate to meal logging page
-    // window.location.href = 'add-meal.html';
+    // Navigate to meal logging page
+    window.location.href = 'add-meal.html';
 }
 
 /**
@@ -67,18 +66,219 @@ function handleStatCardClick(event) {
 }
 
 /**
- * Load dashboard data
+ * Load dashboard data from API
  */
-function loadDashboardData() {
-    // This is sample data - will be replaced with API calls later
-    const data = {
-        mealsCount: 12,
-        issuesCount: 3,
-        dairyCount: 9,
-        redMeatCount: 12
+async function loadDashboardData() {
+    try {
+        // Fetch all meals from API
+        const meals = await API.getAllMeals();
+        console.log('Fetched meals:', meals);
+        
+        // Calculate statistics from the meals
+        const stats = calculateStats(meals);
+        
+        // Update the dashboard
+        updateDashboardStats(stats);
+        
+        // Display recent entries
+        displayRecentEntries(meals);
+        
+    } catch (error) {
+        console.error('Error loading dashboard data:', error);
+        showNotification('Error loading data. Using sample data.', 'error');
+        
+        // Fall back to sample data
+        const sampleData = {
+            mealsCount: 0,
+            issuesCount: 0,
+            dairyCount: 0,
+            redMeatCount: 0
+        };
+        updateDashboardStats(sampleData);
+    }
+}
+
+/**
+ * Calculate statistics from meals data
+ */
+function calculateStats(meals) {
+    if (!meals || !Array.isArray(meals)) {
+        return {
+            mealsCount: 0,
+            issuesCount: 0,
+            dairyCount: 0,
+            redMeatCount: 0
+        };
+    }
+    
+    const stats = {
+        mealsCount: meals.length,
+        issuesCount: 0,
+        dairyCount: 0,
+        redMeatCount: 0
     };
     
-    updateDashboardStats(data);
+    meals.forEach(meal => {
+        // Count meals with symptoms
+        if (meal.symptom && meal.symptom !== '') {
+            stats.issuesCount++;
+        }
+        
+        // Parse categories - handle comma-separated strings, arrays, or single strings
+        let categories = [];
+        if (Array.isArray(meal.categories)) {
+            categories = meal.categories.map(cat => cat.toLowerCase());
+        } else if (typeof meal.categories === 'string') {
+            categories = meal.categories.split(',').map(cat => cat.trim().toLowerCase());
+        }
+        
+        // Count dairy items
+        if (categories.includes('dairy')) {
+            stats.dairyCount++;
+        }
+        
+        // Count red meat items
+        if (categories.includes('red-meat')) {
+            stats.redMeatCount++;
+        }
+    });
+    
+    return stats;
+}
+
+/**
+ * Display recent meal entries
+ */
+function displayRecentEntries(meals) {
+    const entriesList = document.getElementById('entriesList');
+    if (!entriesList) return;
+    
+    if (!meals || meals.length === 0) {
+        entriesList.innerHTML = '<p class="no-entries">No entries yet. Start by logging your first meal!</p>';
+        return;
+    }
+    
+    // Sort meals by timestamp (most recent first)
+    const sortedMeals = [...meals].sort((a, b) => {
+        return new Date(b.timestamp) - new Date(a.timestamp);
+    });
+    
+    // Take only the 5 most recent
+    const recentMeals = sortedMeals.slice(0, 5);
+    
+    // Clear existing entries
+    entriesList.innerHTML = '';
+    
+    // Create entry cards
+    recentMeals.forEach(meal => {
+        const entryCard = createEntryCard(meal);
+        entriesList.appendChild(entryCard);
+    });
+}
+
+/**
+ * Create an entry card element
+ */
+function createEntryCard(meal) {
+    const card = document.createElement('div');
+    card.className = 'entry-card';
+    
+    // Add warning class if there's a symptom
+    if (meal.symptom && meal.symptom !== '') {
+        card.classList.add('entry-warning');
+    }
+    
+    // Format timestamp
+    const timeAgo = getTimeAgo(meal.timestamp);
+    
+    // Format categories - handle comma-separated strings, arrays, or single strings
+    let categories = 'Not specified';
+    if (meal.categories) {
+        if (Array.isArray(meal.categories)) {
+            categories = meal.categories.map(cat => capitalizeFirst(cat)).join(', ');
+        } else if (typeof meal.categories === 'string') {
+            // Split by comma, trim, and capitalize each category
+            categories = meal.categories.split(',').map(cat => capitalizeFirst(cat.trim())).join(', ');
+        } else {
+            categories = capitalizeFirst(String(meal.categories));
+        }
+    }
+    
+    // Format symptom
+    const symptomText = meal.symptom && meal.symptom !== ''
+        ? `${capitalizeFirst(meal.symptom)}${meal.severity ? ` - Severity ${meal.severity}` : ''}`
+        : 'No symptoms';
+    
+    card.innerHTML = `
+        <div class="entry-header">
+            <span class="entry-title">${meal.foodName || 'Unnamed meal'}</span>
+            <span class="entry-time">${timeAgo}</span>
+        </div>
+        <div class="entry-details">
+            <span class="entry-category">${capitalizeFirst(categories)}</span>
+            <span class="entry-symptom ${meal.symptom ? 'has-symptom' : ''}">${symptomText}</span>
+        </div>
+        <div class="entry-actions">
+            <button class="btn-icon-small" onclick="editMeal('${meal.id}')" title="Edit">✏️</button>
+            <button class="btn-icon-small" onclick="deleteMealEntry('${meal.id}')" title="Delete">🗑️</button>
+        </div>
+    `;
+    
+    return card;
+}
+
+/**
+ * Get relative time string
+ */
+function getTimeAgo(timestamp) {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+    
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+    
+    return date.toLocaleDateString();
+}
+
+/**
+ * Capitalize first letter of string
+ */
+function capitalizeFirst(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+/**
+ * Edit meal - navigate to form with meal ID
+ */
+window.editMeal = function(id) {
+    window.location.href = `add-meal.html?id=${id}`;
+};
+
+/**
+ * Delete meal entry
+ */
+window.deleteMealEntry = async function(id) {
+    if (!confirm('Are you sure you want to delete this entry?')) {
+        return;
+    }
+    
+    try {
+        await API.deleteMeal(id);
+        showNotification('Entry deleted successfully', 'success');
+        
+        // Reload dashboard data
+        await loadDashboardData();
+    } catch (error) {
+        console.error('Error deleting meal:', error);
+        showNotification('Error deleting entry', 'error');
+    }
 }
 
 /**
@@ -156,6 +356,14 @@ function showNotification(message, type = 'info') {
     notification.className = `notification notification-${type}`;
     notification.textContent = message;
     
+    // Style the notification based on type
+    const bgColor = {
+        'info': '#3b82f6',
+        'success': '#10b981',
+        'error': '#ef4444',
+        'warning': '#f59e0b'
+    }[type] || '#3b82f6';
+    
     // Style the notification
     Object.assign(notification.style, {
         position: 'fixed',
@@ -163,7 +371,7 @@ function showNotification(message, type = 'info') {
         right: '20px',
         padding: '1rem 1.5rem',
         borderRadius: '0.5rem',
-        backgroundColor: type === 'info' ? '#3b82f6' : '#10b981',
+        backgroundColor: bgColor,
         color: 'white',
         fontWeight: '500',
         boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',

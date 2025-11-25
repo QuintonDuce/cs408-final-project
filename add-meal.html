@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Log Meal - Diet Tracker</title>
+  <meta name="description" content="Log your meals and track symptoms">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <h1 class="logo">🍽️ Quinton's Food Log</h1>
+        <nav class="nav">
+          <a href="index.html" class="nav-link">Dashboard</a>
+          <a href="#" class="nav-link">History</a>
+          <a href="#" class="nav-link">Insights</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main">
+    <div class="container">
+      
+      <!-- Form Section -->
+      <section class="form-section">
+        <div class="form-header">
+          <h2 class="form-title">Log a Meal</h2>
+          <p class="form-subtitle">Track what you eat and how it makes you feel</p>
+        </div>
+
+        <form id="mealForm" class="meal-form">
+          <input type="hidden" id="mealId" name="id">
+          
+          <!-- Food Name -->
+          <div class="form-group">
+            <label for="foodName" class="form-label">
+              Food Name <span class="required">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="foodName" 
+              name="foodName" 
+              class="form-input"
+              placeholder="e.g., Chicken Caesar Salad"
+              required
+            >
+          </div>
+
+          <!-- Food Categories -->
+          <div class="form-group">
+            <label class="form-label">
+              Food Categories <span class="required">*</span>
+            </label>
+            <div class="checkbox-grid">
+              <label class="checkbox-label">
+                <input type="checkbox" name="categories" value="dairy">
+                <span>🥛 Dairy</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="categories" value="red-meat">
+                <span>🥩 Red Meat</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="categories" value="poultry">
+                <span>🍗 Poultry</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="categories" value="seafood">
+                <span>🐟 Seafood</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="categories" value="grain">
+                <span>🌾 Grain</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="categories" value="vegetables">
+                <span>🥗 Vegetables</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="categories" value="fruits">
+                <span>🍎 Fruits</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="categories" value="nuts">
+                <span>🥜 Nuts</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="categories" value="eggs">
+                <span>🥚 Eggs</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" name="categories" value="processed">
+                <span>🍕 Processed</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Timestamp -->
+          <div class="form-group">
+            <label for="timestamp" class="form-label">
+              When did you eat this? <span class="required">*</span>
+            </label>
+            <input 
+              type="datetime-local" 
+              id="timestamp" 
+              name="timestamp" 
+              class="form-input"
+              required
+            >
+          </div>
+
+          <!-- Symptom Section -->
+          <div class="form-group">
+            <label for="symptom" class="form-label">
+              Did you experience any symptoms?
+            </label>
+            <select id="symptom" name="symptom" class="form-select">
+              <option value="">No symptoms</option>
+              <option value="bloating">Bloating</option>
+              <option value="stomach-pain">Stomach Pain</option>
+              <option value="nausea">Nausea</option>
+              <option value="headache">Headache</option>
+              <option value="fatigue">Fatigue</option>
+              <option value="diarrhea">Diarrhea</option>
+              <option value="constipation">Constipation</option>
+              <option value="heartburn">Heartburn</option>
+              <option value="cramps">Cramps</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <!-- Severity (shown only when symptom is selected) -->
+          <div class="form-group" id="severityGroup" style="display: none;">
+            <label for="severity" class="form-label">
+              Symptom Severity
+            </label>
+            <div class="severity-selector">
+              <input 
+                type="range" 
+                id="severity" 
+                name="severity" 
+                min="1" 
+                max="5" 
+                value="3"
+                class="severity-slider"
+              >
+              <div class="severity-labels">
+                <span>1</span>
+                <span>2</span>
+                <span>3</span>
+                <span>4</span>
+                <span>5</span>
+              </div>
+              <div class="severity-description">
+                <span class="severity-text">Mild</span>
+                <span class="severity-value" id="severityValue">3</span>
+                <span class="severity-text">Severe</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div class="form-group">
+            <label for="notes" class="form-label">
+              Additional Notes
+            </label>
+            <textarea 
+              id="notes" 
+              name="notes" 
+              class="form-textarea"
+              placeholder="Any additional details about the meal or symptoms..."
+              rows="4"
+            ></textarea>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="cancelBtn">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+              <span class="btn-icon">✓</span>
+              Save Entry
+            </button>
+          </div>
+        </form>
+
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+          <div class="spinner"></div>
+          <p>Saving your entry...</p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 Diet Tracker. A personal health journal for identifying food triggers.</p>
+      <p class="disclaimer">This tool is not a medical diagnostic tool. Consult with a healthcare professional for medical advice.</p>
+    </div>
+  </footer>
+
+  <script type="module" src="js/form.js"></script>
+</body>
+
+</html>

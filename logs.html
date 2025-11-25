@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>All Logs - Diet Tracker</title>
+  <meta name="description" content="View and filter all your meal logs">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <h1 class="logo">🍽️ Quinton's Food Log</h1>
+        <nav class="nav">
+          <a href="index.html" class="nav-link">Dashboard</a>
+          <a href="logs.html" class="nav-link active">All Logs</a>
+          <a href="#" class="nav-link">Insights</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main">
+    <div class="container">
+      
+      <!-- Page Header -->
+      <section class="form-header">
+        <h2 class="form-title">All Food Logs</h2>
+        <p class="form-subtitle">View and filter your complete meal history</p>
+      </section>
+
+      <!-- Filter Section -->
+      <section class="filter-section">
+        <div class="filter-card">
+          <div class="filter-header">
+            <h3 class="filter-title">🔍 Filter Options</h3>
+            <button class="btn btn-secondary btn-sm" id="resetFiltersBtn">Reset Filters</button>
+          </div>
+          
+          <div class="filter-grid">
+            <!-- Date Range Filter -->
+            <div class="filter-group">
+              <label class="filter-label">Date Range</label>
+              <div class="date-inputs">
+                <input type="date" id="startDate" class="form-input date-input" placeholder="Start Date">
+                <span class="date-separator">to</span>
+                <input type="date" id="endDate" class="form-input date-input" placeholder="End Date">
+              </div>
+            </div>
+
+            <!-- Category Filter -->
+            <div class="filter-group">
+              <label class="filter-label">Category</label>
+              <select id="categoryFilter" class="form-select">
+                <option value="">All Categories</option>
+                <option value="dairy">Dairy</option>
+                <option value="red-meat">Red Meat</option>
+                <option value="poultry">Poultry</option>
+                <option value="fish">Fish</option>
+                <option value="vegetables">Vegetables</option>
+                <option value="fruits">Fruits</option>
+                <option value="grains">Grains</option>
+                <option value="nuts">Nuts</option>
+                <option value="processed">Processed Foods</option>
+              </select>
+            </div>
+
+            <!-- Symptom Filter -->
+            <div class="filter-group">
+              <label class="filter-label">Symptom Status</label>
+              <select id="symptomFilter" class="form-select">
+                <option value="">All Entries</option>
+                <option value="with-symptoms">With Symptoms</option>
+                <option value="no-symptoms">No Symptoms</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="filter-actions">
+            <button class="btn btn-primary" id="fetchLogsBtn">
+              <span class="btn-icon">↻</span>
+              Fetch All Logs
+            </button>
+            <button class="btn btn-secondary" id="applyFiltersBtn">Apply Filters</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stats Summary -->
+      <section class="logs-stats">
+        <div class="stats-grid-compact">
+          <div class="stat-card-compact">
+            <div class="stat-icon-sm">📊</div>
+            <div class="stat-info">
+              <div class="stat-value-sm" id="totalLogs">0</div>
+              <div class="stat-label-sm">Total Logs</div>
+            </div>
+          </div>
+          <div class="stat-card-compact">
+            <div class="stat-icon-sm">⚠️</div>
+            <div class="stat-info">
+              <div class="stat-value-sm" id="logsWithSymptoms">0</div>
+              <div class="stat-label-sm">With Symptoms</div>
+            </div>
+          </div>
+          <div class="stat-card-compact">
+            <div class="stat-icon-sm">✅</div>
+            <div class="stat-info">
+              <div class="stat-value-sm" id="logsNoSymptoms">0</div>
+              <div class="stat-label-sm">No Symptoms</div>
+            </div>
+          </div>
+          <div class="stat-card-compact">
+            <div class="stat-icon-sm">📅</div>
+            <div class="stat-info">
+              <div class="stat-value-sm" id="dateRangeDisplay">All Time</div>
+              <div class="stat-label-sm">Date Range</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Loading Indicator -->
+      <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+        <div class="spinner"></div>
+        <p>Loading logs...</p>
+      </div>
+
+      <!-- Logs List -->
+      <section class="logs-section">
+        <div class="section-header">
+          <h3 class="section-title">
+            <span id="logsTitle">All Entries</span>
+            <span class="logs-count" id="logsCount">(0 logs)</span>
+          </h3>
+          <div class="sort-controls">
+            <label class="sort-label">Sort by:</label>
+            <select id="sortOrder" class="form-select select-sm">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="name-asc">Name (A-Z)</option>
+              <option value="name-desc">Name (Z-A)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="entries-list" id="logsList">
+          <p class="no-entries">Click "Fetch All Logs" to load your meal history</p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 Diet Tracker. A personal health journal for identifying food triggers.</p>
+      <p class="disclaimer">This tool is not a medical diagnostic tool. Consult with a healthcare professional for medical advice.</p>
+    </div>
+  </footer>
+
+  <script type="module" src="js/logs.js"></script>
+</body>
+
+</html>
